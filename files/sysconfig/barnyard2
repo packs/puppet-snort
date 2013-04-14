@@ -1,0 +1,10 @@
+# Config file for /etc/init.d/barnyard2
+LOGFILE="snort_unified.log"
+
+# You probably don't want to change this, but in case you do
+LOGDIR="/var/log/snort"
+
+# Probably not this either
+CONF=/etc/snort/barnyard2.conf
+
+EXTRA_ARGS=""

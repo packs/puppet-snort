@@ -1,0 +1,81 @@
+# /etc/sysconfig/snort
+# $Id$
+
+# To listen only on given interfaces use this:
+#INTERFACE="eth1 eth2 eth3 eth4 eth5"
+INTERFACE=eth1
+
+
+# Where is Snort's configuration file?
+# -c {/path/to/snort.conf}
+CONF=/etc/snort/snort.conf
+
+# What user and group should Snort drop to after starting? This user and
+# group should have very few privileges.
+# -u {user} -g {group}
+# config set_uid: user
+# config set_gid: group
+USER=snort
+GROUP=snort
+
+# Should Snort change the order in which the rules are applied to packets.
+# Instead of being applied in the standard Alert->Pass->Log order, this will
+# apply them in Pass->Alert->Log order.
+# -o
+# config order: {actions in order}
+# e.g. config order: log alert pass activation dynamic suspicious redalert
+PASS_FIRST=0
+
+
+#### Logging & Alerting
+
+# NOTE: NO_PACKET_LOG and BINARY_LOG, ALERTMODE, etc. are mutually
+# exclusive. Use either NO_PACKET_LOG or any/all of the other logging
+# options. But the more logging options use you, the slower Snort will run.
+
+
+# Where should Snort log?
+# -l {/path/to/logdir}
+# config logdir: {/path/to/logdir}
+LOGDIR=/var/log/snort
+
+# Should Snort dump the application layer data when displaying packets in
+# verbose or packet logging mode.
+# -d
+# config dump_payload
+DUMP_APP=1
+
+# Should Snort keep binary (AKA pcap, AKA tcpdump) logs also? This is
+# recommended as it provides very useful information for investigations.
+# -b
+# output log_tcpdump: {log name}
+BINARY_LOG=0
+
+# Should Snort turn off packet logging?  The program still generates
+# alerts normally.
+# -N
+# config nolog
+NO_PACKET_LOG=0
+
+# Print out the receiving interface name in alerts.
+# -I
+# config alert_with_interface_name
+PRINT_INTERFACE=0
+
+# When dumping the stats, what log file should we look in
+SYSLOG=/var/log/messages
+
+# When dumping the stats, how long to wait to make sure that syslog can
+# flush data to disk
+SECS=5
+
+# To add a BPF filter to the command line uncomment the following variable
+# syntax corresponds to tcpdump(8)
+#BPF="not host 192.168.1.1"
+
+# To use an external BPF filter file uncomment the following variable
+# syntax corresponds to tcpdump(8)
+# -F {/path/to/bpf_file}
+# config bpf_file: /path/to/bpf_file
+#BPFFILE=/etc/snort/bpf_file
+
