@@ -1,4 +1,4 @@
-class snort::daemonlogger ( $capture_dir = '/data/capture_files', ){
+class snort::daemonlogger ( $interface = 'eth1', $capture_dir = '/data/capture_files', $filesize = '1073741824', $percent = '90' ){
 
   package {
     'daemonlogger':
@@ -8,8 +8,7 @@ class snort::daemonlogger ( $capture_dir = '/data/capture_files', ){
   file {
     '/etc/sysconfig/daemonlogger':
       ensure  => present,
-      source  => [ "puppet:///modules/snort/sysconfig/daemonlogger-${::fqdn}",
-                  'puppet:///modules/snort/sysconfig/daemonlogger' ],
+      content => template( 'snort/daemonlogger.erb'),
       alias   => 'daemonlogger-sysconfig',
       mode    => '0644',
       owner   => 'root',
