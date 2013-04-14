@@ -1,0 +1,70 @@
+#-------------------------------------------------------------
+#  Barnyard2 configuration file
+#
+#  http://www.securixlive.com/barnyard2
+#
+#  Contact: dev@securixlive.com
+#-------------------------------------------------------------
+
+#
+# This file contains a sample barnyard2 configuration.
+# You can take the following steps to create your own custom configuration:
+#
+#   1) Configure the variable declarations
+#   2) Setup the input plugins
+#   3) Setup the output plugins
+#
+
+# Step 1: configure the variable declarations
+#
+# in order to keep from having a commandline that uses every letter in the
+# alphabet most configuration options are set here.
+
+# use UTC for timestamps
+#
+#config utc
+
+# set the appropriate paths to the file(s) your Snort process is using.
+#
+config reference_file:      /etc/snort/reference.config
+config classification_file: /etc/snort/classification.config
+config gen_file:            /etc/snort/rules/gen-msg.map
+config sid_file:            /etc/snort/rules/sid-msg.map
+
+
+# set the directory for any output logging
+#
+config logdir: /var/log/snort
+
+# System specific logging options
+config hostname:        <%= hostname %>
+config interface:       <%= interface %>
+
+# define the full waldo filepath.
+#
+config waldo_file: /var/log/snort/barnyard2.waldo
+
+#
+# CONTINOUS MODE
+#
+
+# set the archive directory for use with continous mode
+#
+config archivedir: /var/log/snort/archive
+
+# Step 2: setup the input plugins
+#
+# this is not hard, only unified2 is supported ;)
+input unified2
+
+
+# Step 3: setup the output plugins
+
+# alert_syslog
+#-----------------------------
+#
+# Purpose:
+#  This output module provides the abilty to output alert information to a
+# remote network host as well as the local host.
+#
+output alert_syslog: LOG_AUTH LOG_ALERT

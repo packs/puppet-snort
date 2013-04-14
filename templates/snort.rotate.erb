@@ -1,0 +1,9 @@
+# /etc/logrotate.d/snort
+
+/var/log/snort/alert.log {
+    daily
+    rotate <%= rotation %>
+    missingok
+    compress
+    copytruncate
+}
