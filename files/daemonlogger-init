@@ -1,0 +1,135 @@
+#!/bin/bash
+#
+# daemonlogger        Start/Stop the round robin packet capture
+#
+# chkconfig: 345 40 60
+# description:  Process and save packets in a round-robin fashion.
+# processname: daemonlogger
+# config: /etc/sysconfig/daemonlogger
+# pidfile: /var/run/daemonlogger.pid
+
+### BEGIN INIT INFO
+# Provides: daemonlogger
+# Required-Start: $local_fs $network
+# Required-Stop: $local_fs $network
+# Default-Start: 3 4 5
+# Default-Stop:  0 1 2 6
+# Short-Description: Daemonlogger service
+# Description: Process and save packets in a round-robin fashion.
+### END INIT INFO
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source the local configuration file
+. /etc/sysconfig/daemonlogger
+
+PIDFILE="/var/run/daemonlogger.pid"
+
+# Convert the /etc/sysconfig/daemonlogger settings to something daemonlogger can
+# use on the startup line.
+if [ "$INTERFACE"X = "X" ]; then
+   INTERFACE=""
+else
+   INTERFACE="-i $INTERFACE"
+fi
+
+if [ "$SNAPLEN"X = "X" ]; then
+   SNAPLEN=""
+else
+   SNAPLEN="-S $SNAPLEN"
+fi
+
+if [ "$SAVEDIR"X = "X" ]; then
+   SAVEDIR="-l /data/capture_files/"
+else
+   SAVEDIR="-l $SAVEDIR"
+fi
+
+if [ "$NAME"X = "X" ]; then
+   NAME=""
+else
+   NAME="-n $NAME"
+fi
+
+if [ "$MAXPCT"X = "X" ]; then
+   MAXPCT=""
+else
+   MAXPCT="-M $MAXPCT"
+fi
+
+if [ "$MAXSIZE"X = "X" ]; then
+   MAXSIZE="-s 536870912"
+else 
+   MAXSIZE="-s $MAXSIZE"
+fi
+
+if [ "$MAXDURATION"X = "X" ]; then
+   MAXDURATION=""
+else
+   MAXDURATION="-t $MAXDURATION"
+fi        
+
+if [ "$BPFFILE"X = "X" ]; then
+   BPFFILE=""
+else
+   BPFFILE="-f $BPFFILE"
+fi
+
+if [ "$USER"X = "X" ]; then
+   USER=""
+else
+   USER="-u $USER"
+fi
+
+if [ "$GROUP"X = "X" ]; then
+   GROUP=""
+else
+   GROUP="-g $GROUP"
+fi
+
+
+######################################
+# Now to the real heart of the matter:
+
+start() {
+        echo -n $"Starting daemonlogger: "
+        daemon --pidfile=$PIDFILE /usr/sbin/daemonlogger -d -r $INTERFACE $SNAPLEN $SAVEDIR $NAME $MAXPCT $MAXSIZE $MAXDURATION $BPFFILE $USER $GROUP -p $PIDFILE > /dev/null 2>&1
+        retval=$?
+        [ $retval -eq 0 ] && touch /var/lock/subsys/daemonlogger
+        echo 
+        return $retval
+}
+
+stop() {
+        echo -n $"Stopping $daemonlogger: "
+        killproc /usr/bin/daemonlogger
+        retval=$?
+        [ $retval -eq 0 ] && rm -f /var/lock/subsys/daemonlogger
+        echo
+        return $retval
+}
+
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop 
+        ;;
+  status)
+        status daemonlogger
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|status|restart (long|opt)}"
+        exit 2
+esac
+
+exit 0
