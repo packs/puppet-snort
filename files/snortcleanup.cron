@@ -1,0 +1,2 @@
+# snort binary alert Log Cleanup
+0 2   * * *     root  /usr/local/sbin/snortcleanup.sh
